@@ -46,11 +46,21 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
-        UserDTO updatedUser = userService.updateUser(id, userDTO);
-        if (updatedUser != null) {
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<UserDTO> updateUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
+//        UserDTO updatedUser = userService.updateUser(id, userDTO);
+//        if (updatedUser != null) {
+//            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+
+
+    @PatchMapping("/patch/{id}")
+    public ResponseEntity<UserDTO> patchUser(@PathVariable long id, @RequestBody UserDTO partialUserDTO) {
+        UserDTO patchedUser = userService.patchUser(id, partialUserDTO);
+        if (patchedUser != null) {
+            return new ResponseEntity<>(patchedUser, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

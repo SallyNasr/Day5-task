@@ -7,8 +7,11 @@ import com.example.firstproject.Mapper.UserMapper;
 import com.example.firstproject.entities.UserEntity;
 import com.example.firstproject.Repositories.UserRepository;
 import com.example.firstproject.model.UserDTO;
-import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //This UserService class provides methods for:
@@ -44,19 +47,47 @@ public class UserService {
 
     public UserDTO createUser(UserDTO userDTO) {
         UserEntity userEntity = userMapper.userDTOToUserEntity(userDTO);
-         userEntity = userRepository.save(userEntity);
+        userEntity = userRepository.save(userEntity);
         return userMapper.userEntityToUserDTO(userEntity);
     }
 
-    public UserDTO updateUser(long userId, UserDTO userDTO) {
+//    public UserDTO updateUser(long userId, UserDTO userDTO) {
+//        UserEntity existingUserEntity = userRepository.findById(userId).orElse(null);
+//
+//        if (existingUserEntity != null) {
+//            // Update the existing user entity with new data
+//            existingUserEntity.setName(userDTO.getName());
+//            existingUserEntity.setAge(userDTO.getAge());
+//            existingUserEntity.setDepartment(userDTO.getDepartment());
+//
+//            // Save and return the updated user
+//            existingUserEntity = userRepository.save(existingUserEntity);
+//            return userMapper.userEntityToUserDTO(existingUserEntity);
+//        } else {
+//            // Handle the case where the user to update is not found
+//            return null;
+//        }
+//    }
+
+    public void deleteUser(long userId) {
+        userRepository.deleteById(userId);
+    }
+
+
+    public UserDTO patchUser(long userId, UserDTO partialUserDTO) {
         UserEntity existingUserEntity = userRepository.findById(userId).orElse(null);
 
         if (existingUserEntity != null) {
-            // Update the existing user entity with new data
-            existingUserEntity.setName(userDTO.getName());
-            existingUserEntity.setAge(userDTO.getAge());
-            existingUserEntity.setDepartment(userDTO.getDepartment());
-
+            // Apply partial updates to the existing user entity
+            if (partialUserDTO.getName() != null) {
+                existingUserEntity.setName(partialUserDTO.getName());
+            }
+            if (partialUserDTO.getAge() != 0) {
+                existingUserEntity.setAge(partialUserDTO.getAge());
+            }
+            if (partialUserDTO.getDepartment() != null) {
+                existingUserEntity.setDepartment(partialUserDTO.getDepartment());
+            }
             // Save and return the updated user
             existingUserEntity = userRepository.save(existingUserEntity);
             return userMapper.userEntityToUserDTO(existingUserEntity);
@@ -65,11 +96,6 @@ public class UserService {
             return null;
         }
     }
-
-    public void deleteUser(long userId) {
-        userRepository.deleteById(userId);
-    }
-
 }
 
 //Usage of UserMapper:
